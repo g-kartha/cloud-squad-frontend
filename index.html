@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Squad • Exam Readiness</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg: #f5f5f7;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: rgba(210,210,215,0.9);
+      --card: rgba(255,255,255,0.72);
+      --cardBorder: rgba(210,210,215,0.55);
+      --shadow: 0 18px 45px rgba(0,0,0,0.10);
+
+      --blue: #0071e3;
+      --blue2: #005fcc;
+      --green: #16a34a;
+      --red: #dc2626;
+
+      --blobBlue: rgba(0,113,227,0.22);
+      --blobGreen: rgba(34,197,94,0.18);
+      --blobGray: rgba(0,0,0,0.08);
+    }
+
+    /* Dark theme overrides */
+    [data-theme="dark"]{
+      --bg: #0b0c10;
+      --text: #f5f5f7;
+      --muted: rgba(245,245,247,0.68);
+      --line: rgba(255,255,255,0.14);
+      --card: rgba(20,22,28,0.62);
+      --cardBorder: rgba(255,255,255,0.10);
+      --shadow: 0 18px 55px rgba(0,0,0,0.55);
+
+      --blue: #4aa3ff;
+      --blue2: #2d7fe0;
+
+      --blobBlue: rgba(74,163,255,0.18);
+      --blobGreen: rgba(34,197,94,0.12);
+      --blobGray: rgba(255,255,255,0.06);
+    }
+
+    * { box-sizing: border-box; font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      color: var(--text);
+      background:
+        radial-gradient(900px 450px at 20% 20%, rgba(0,113,227,0.10), transparent 60%),
+        radial-gradient(900px 450px at 80% 10%, rgba(34,197,94,0.08), transparent 55%),
+        radial-gradient(900px 450px at 60% 90%, rgba(220,38,38,0.06), transparent 55%),
+        var(--bg);
+      overflow:hidden;
+      transition: background 220ms ease, color 220ms ease;
+    }
+
+    .blob{
+      position:absolute;
+      width:520px; height:520px;
+      filter: blur(55px);
+      opacity:0.55;
+      border-radius:50%;
+      animation: floaty 10s ease-in-out infinite;
+      pointer-events:none;
+    }
+    .blob.one{ background: var(--blobBlue); top:-180px; left:-180px; }
+    .blob.two{ background: var(--blobGreen); top:-220px; right:-220px; animation-delay:-3s; }
+    .blob.three{ background: var(--blobGray); bottom:-220px; left:30%; animation-delay:-6s; }
+
+    @keyframes floaty{
+      0%,100%{ transform: translate(0,0) scale(1); }
+      50%{ transform: translate(18px, 22px) scale(1.03); }
+    }
+
+    .wrap{ position:relative; width:100%; max-width:480px; padding:18px; }
+
+    .card{
+      position:relative;
+      padding: 34px 30px;
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--cardBorder);
+      overflow:hidden;
+
+      transform: translateY(10px);
+      opacity: 0;
+      animation: enter 520ms ease-out forwards;
+    }
+
+    .card::before{
+      content:"";
+      position:absolute;
+      top:-60px; left:-60px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(255,255,255,0.85), transparent 65%);
+      transform: rotate(25deg);
+      opacity: 0.20;
+      pointer-events:none;
+    }
+
+    @keyframes enter{ to{ transform: translateY(0); opacity: 1; } }
+
+    .topbar{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .toggle{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.35);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease, background 220ms ease;
+      user-select:none;
+    }
+    [data-theme="dark"] .toggle{
+      background: rgba(255,255,255,0.06);
+    }
+    .toggle:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .toggle:active{ transform: translateY(0); }
+
+    .subtitle{
+      margin: 8px 0 18px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .field{ text-align:left; margin-bottom: 12px; }
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 6px;
+    }
+
+    input{
+      width:100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.75);
+      color: var(--text);
+      font-size: 14px;
+      outline:none;
+      transition: border 160ms ease, box-shadow 160ms ease, background 220ms ease;
+    }
+    [data-theme="dark"] input{
+      background: rgba(255,255,255,0.06);
+    }
+    input:focus{
+      border-color: rgba(0,113,227,0.65);
+      box-shadow: 0 0 0 4px rgba(0,113,227,0.12);
+    }
+
+    .btn{
+      width:100%;
+      margin-top: 8px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:none;
+      color:white;
+      background: linear-gradient(180deg, var(--blue), var(--blue2));
+      font-size: 15px;
+      font-weight: 600;
+      cursor:pointer;
+      position: relative;
+      overflow:hidden;
+      transition: transform 120ms ease, filter 120ms ease;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.03); }
+    .btn:active{ transform: translateY(0); }
+    .btn:disabled{ cursor:not-allowed; filter: grayscale(0.25) brightness(0.9); }
+
+    .btn::after{
+      content:"";
+      position:absolute;
+      top:0; left:-60%;
+      width:60%; height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transform: skewX(-18deg);
+      transition: left 600ms ease;
+    }
+    .btn:hover::after{ left:120%; }
+
+    .row{ display:flex; gap:10px; align-items:center; justify-content:center; }
+
+    .result{
+      margin-top: 16px;
+      padding: 12px 12px;
+      border-radius: 14px;
+      font-weight: 500;
+      font-size: 14px;
+      text-align:center;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.55);
+      opacity:0;
+      transform: translateY(6px);
+      transition: opacity 180ms ease, transform 180ms ease, background 220ms ease;
+      min-height: 44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+      color: var(--text);
+    }
+    [data-theme="dark"] .result{
+      background: rgba(255,255,255,0.04);
+    }
+    .result.show{ opacity:1; transform: translateY(0); }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid rgba(0,0,0,0.06);
+      background: rgba(255,255,255,0.75);
+    }
+    [data-theme="dark"] .badge{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.06);
+    }
+    .badge.ready{ color: var(--green); }
+    .badge.notready{ color: var(--red); }
+
+    .spinner{
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.35);
+      border-top-color: rgba(255,255,255,0.9);
+      animation: spin 700ms linear infinite;
+      display:none;
+    }
+    @keyframes spin{ to{ transform: rotate(360deg); } }
+
+    .tiny{ font-size: 12px; color: var(--muted); margin-top: 10px; text-align:center; }
+    .footer{ margin-top: 18px; font-size: 12px; color: rgba(142,142,147,0.9); text-align:center; }
+    [data-theme="dark"] .footer{ color: rgba(245,245,247,0.55); }
+  </style>
+</head>
+
+<body>
+  <div class="blob one"></div>
+  <div class="blob two"></div>
+  <div class="blob three"></div>
+
+  <div class="wrap">
+    <div class="card">
+      <div class="topbar">
+        <div>
+          <h1>Cloud Squad</h1>
+          <div class="subtitle">AWS Exam Readiness Checker • serverless & clean</div>
+        </div>
+
+        <button id="themeToggle" class="toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+          🌙 Dark
+        </button>
+      </div>
+
+      <div class="field">
+        <label for="userId">User ID</label>
+        <input id="userId" type="text" value="web-user-001" placeholder="e.g., gautham-001"/>
+      </div>
+
+      <div class="field">
+        <label for="score">Score</label>
+        <input id="score" type="number" value="80" placeholder="0 - 100"/>
+      </div>
+
+      <button id="checkBtn" class="btn" onclick="checkReadiness()">
+        <span class="row">
+          <span id="btnText">Check Readiness</span>
+          <span id="spin" class="spinner"></span>
+        </span>
+      </button>
+
+      <div id="result" class="result"></div>
+
+      <div class="tiny">Tip: Try 69 and 70 to see the logic flip.</div>
+      <div class="footer">Built by Gautham • Serverless on AWS ☁️</div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://iokk9wj94c.execute-api.eu-north-1.amazonaws.com/check";
+
+    // Theme: default to light, but remember user choice
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      const btn = document.getElementById("themeToggle");
+      if (theme === "dark") {
+        btn.textContent = "☀️ Light";
+      } else {
+        btn.textContent = "🌙 Dark";
+      }
+      localStorage.setItem("theme", theme);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme") || "light";
+      applyTheme(current === "dark" ? "light" : "dark");
+    }
+
+    // Load theme on start
+    (function initTheme(){
+      const saved = localStorage.getItem("theme");
+      applyTheme(saved || "light");
+    })();
+
+    function showResult(html, type) {
+      const el = document.getElementById("result");
+      el.innerHTML = html;
+      el.className = "result show";
+
+      if (type === "ready") el.style.borderColor = "rgba(22,163,74,0.35)";
+      else if (type === "notready") el.style.borderColor = "rgba(220,38,38,0.35)";
+      else el.style.borderColor = "var(--line)";
+    }
+
+    async function checkReadiness() {
+      const userId = document.getElementById("userId").value.trim();
+      const score = Number(document.getElementById("score").value);
+
+      const btn = document.getElementById("checkBtn");
+      const btnText = document.getElementById("btnText");
+      const spin = document.getElementById("spin");
+
+      if (!userId) {
+        showResult(`<span class="badge notready">⚠️ Missing User ID</span>`, "notready");
+        return;
+      }
+      if (Number.isNaN(score) || score < 0 || score > 100) {
+        showResult(`<span class="badge notready">⚠️ Score must be 0–100</span>`, "notready");
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.textContent = "Checking...";
+      spin.style.display = "inline-block";
+      showResult(`Checking your score…`, "");
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId, score })
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+
+        const data = await response.json();
+
+        if (data.readiness === "Ready") {
+          showResult(
+            `<span class="badge ready">✅ Ready</span> <span>Score: <b>${data.score}</b></span>`,
+            "ready"
+          );
+        } else {
+          showResult(
+            `<span class="badge notready">❌ Not Ready</span> <span>Score: <b>${data.score}</b></span>`,
+            "notready"
+          );
+        }
+
+      } catch (err) {
+        showResult(`<span class="badge notready">⚠️ Error</span> <span>Couldn’t reach the API.</span>`, "notready");
+      }
+
+      spin.style.display = "none";
+      btnText.textContent = "Check Readiness";
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>
